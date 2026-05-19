@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>ШкафеLLA — Заявка</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#83b541">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="ШкафеLLA">
+<link rel="apple-touch-icon" href="icon-192.png">
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Unbounded:wght@400;700;900&family=Manrope:wght@400;500;600;700&display=swap');
+
+*{box-sizing:border-box;margin:0;padding:0}
+
+:root{
+  --green:#83b541;
+  --green-dark:#5e8a2a;
+  --green-light:#f0f7e6;
+  --green-mid:#c8e49a;
+  --text:#1a1f0e;
+  --text2:#4a5240;
+  --text3:#8a9478;
+  --border:#dde8c8;
+  --bg:#f7f9f3;
+  --surface:#ffffff;
+  --red:#c0392b;
+  --radius:14px;
+  --radius-sm:10px;
+}
+
+html{height:100%}
+body{
+  min-height:100%;
+  background:var(--bg);
+  font-family:'Manrope',sans-serif;
+  color:var(--text);
+  padding:0 0 60px;
+}
+
+/* Background texture */
+body::before{
+  content:'';
+  position:fixed;
+  inset:0;
+  background:
+    radial-gradient(ellipse 80% 50% at 110% -10%, rgba(131,181,65,0.12) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 40% at -10% 110%, rgba(131,181,65,0.08) 0%, transparent 60%);
+  pointer-events:none;
+  z-index:0;
+}
+
+.wrap{
+  position:relative;
+  z-index:1;
+  max-width:520px;
+  margin:0 auto;
+  padding:0 16px;
+}
+
+/* Header */
+.header{
+  padding:32px 0 28px;
+  text-align:center;
+}
+.logo{
+  font-family:'Unbounded',sans-serif;
+  font-size:clamp(34px,9vw,52px);
+  font-weight:900;
+  letter-spacing:-2px;
+  line-height:1;
+  color:var(--text);
+  margin-bottom:6px;
+}
+.logo .ll{color:var(--green)}
+.logo-sub{
+  font-family:'Unbounded',sans-serif;
+  font-size:9px;
+  font-weight:400;
+  letter-spacing:4px;
+  color:var(--text3);
+  text-transform:uppercase;
+  margin-bottom:20px;
+}
+.header-line{
+  width:48px;height:3px;
+  background:var(--green);
+  margin:0 auto;
+  border-radius:2px;
+}
+
+/* Card */
+.card{
+  background:var(--surface);
+  border-radius:var(--radius);
+  padding:28px 24px;
+  border:1px solid var(--border);
+  box-shadow:0 2px 24px rgba(131,181,65,0.06), 0 1px 4px rgba(0,0,0,0.04);
+  margin-bottom:16px;
+}
+.card-title{
+  font-family:'Unbounded',sans-serif;
+  font-size:11px;
+  font-weight:700;
+  letter-spacing:2px;
+  text-transform:uppercase;
+  color:var(--green);
+  margin-bottom:22px;
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+.card-title::after{
+  content:'';flex:1;height:1px;background:var(--border);
+}
+
+/* Fields */
+.field{margin-bottom:20px}
+.field:last-child{margin-bottom:0}
+label.lbl{
+  display:block;
+  font-size:13px;
+  font-weight:700;
+  color:var(--text2);
+  margin-bottom:8px;
+  letter-spacing:0.2px;
+}
+.req{color:var(--green);margin-left:2px}
+
+input[type="text"],
+input[type="date"],
+textarea{
+  width:100%;
+  padding:13px 16px;
+  font-size:15px;
+  font-family:'Manrope',sans-serif;
+  border:1.5px solid var(--border);
+  border-radius:var(--radius-sm);
+  background:var(--bg);
+  color:var(--text);
+  outline:none;
+  transition:all .2s;
+  -webkit-appearance:none;
+}
+input:focus,textarea:focus{
+  border-color:var(--green);
+  background:var(--surface);
+  box-shadow:0 0 0 3px rgba(131,181,65,0.12);
+}
+input::placeholder,textarea::placeholder{color:var(--text3)}
+textarea{resize:vertical;min-height:90px;line-height:1.5}
+input[type="date"]{color:var(--text)}
+
+/* Radio */
+.radio-grid{display:flex;flex-direction:column;gap:10px}
+.radio-card{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:13px 16px;
+  border:1.5px solid var(--border);
+  border-radius:var(--radius-sm);
+  cursor:pointer;
+  transition:all .15s;
+  background:var(--bg);
+  user-select:none;
+}
+.radio-card:hover{border-color:var(--green-mid);background:var(--green-light)}
+.radio-card input{display:none}
+.radio-card.checked{
+  border-color:var(--green);
+  background:var(--green-light);
+}
+.radio-bullet{
+  width:20px;height:20px;
+  border-radius:50%;
+  border:2px solid var(--border);
+  flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  transition:all .15s;
+}
+.radio-card.checked .radio-bullet{
+  border-color:var(--green);
+  background:var(--green);
+}
+.radio-bullet::after{
+  content:'';
+  width:8px;height:8px;
+  border-radius:50%;
+  background:white;
+  opacity:0;
+  transition:opacity .15s;
+}
+.radio-card.checked .radio-bullet::after{opacity:1}
+.radio-label{font-size:14px;font-weight:500;color:var(--text);flex:1}
+.radio-icon{font-size:18px;opacity:0.7}
+
+/* File upload */
+.file-zone{
+  border:2px dashed var(--border);
+  border-radius:var(--radius-sm);
+  padding:24px 16px;
+  text-align:center;
+  cursor:pointer;
+  transition:all .2s;
+  background:var(--bg);
+  position:relative;
+}
+.file-zone:hover,.file-zone.dragover{
+  border-color:var(--green);
+  background:var(--green-light);
+}
+.file-zone input{
+  position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;
+}
+.file-icon{font-size:28px;margin-bottom:8px}
+.file-label{font-size:14px;font-weight:600;color:var(--text2);margin-bottom:4px}
+.file-hint{font-size:12px;color:var(--text3)}
+.warn{
+  font-size:12px;color:var(--red);font-weight:700;
+  margin-top:10px;line-height:1.4;
+  padding:8px 12px;
+  background:rgba(192,57,43,0.06);
+  border-radius:8px;
+  border-left:3px solid var(--red);
+}
+
+/* File list */
+.file-list{margin-top:12px;display:flex;flex-direction:column;gap:6px}
+.file-chip{
+  display:flex;align-items:center;gap:8px;
+  padding:8px 12px;
+  background:var(--green-light);
+  border:1px solid var(--green-mid);
+  border-radius:8px;
+  font-size:12px;
+  animation:slideIn .15s ease;
+}
+@keyframes slideIn{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:translateY(0)}}
+.file-chip-name{flex:1;font-weight:600;color:var(--text2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.file-chip-size{color:var(--text3);flex-shrink:0}
+.file-chip-del{
+  background:none;border:none;cursor:pointer;
+  color:var(--text3);padding:0;font-size:16px;line-height:1;
+  flex-shrink:0;transition:color .1s;
+}
+.file-chip-del:hover{color:var(--red)}
+
+/* External link */
+.or-divider{
+  text-align:center;font-size:12px;color:var(--text3);
+  margin:14px 0;position:relative;
+}
+.or-divider::before,.or-divider::after{
+  content:'';position:absolute;top:50%;width:42%;height:1px;background:var(--border);
+}
+.or-divider::before{left:0}
+.or-divider::after{right:0}
+
+/* Submit */
+.submit-btn{
+  width:100%;
+  padding:18px;
+  background:var(--green);
+  color:white;
+  border:none;
+  border-radius:var(--radius);
+  font-family:'Unbounded',sans-serif;
+  font-size:14px;
+  font-weight:700;
+  letter-spacing:1px;
+  cursor:pointer;
+  transition:all .2s;
+  text-transform:uppercase;
+  position:relative;
+  overflow:hidden;
+}
+.submit-btn:hover{background:var(--green-dark);transform:translateY(-1px);box-shadow:0 6px 20px rgba(131,181,65,0.35)}
+.submit-btn:active{transform:translateY(0)}
+.submit-btn:disabled{background:#b8c9a0;cursor:not-allowed;transform:none;box-shadow:none}
+.submit-btn .btn-inner{display:flex;align-items:center;justify-content:center;gap:10px}
+.spinner{
+  width:18px;height:18px;
+  border:2.5px solid rgba(255,255,255,0.3);
+  border-top-color:#fff;
+  border-radius:50%;
+  animation:spin .7s linear infinite;
+  display:none;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* Progress bar */
+.progress-wrap{
+  display:none;
+  margin-top:12px;
+  background:var(--border);
+  border-radius:6px;
+  height:6px;
+  overflow:hidden;
+}
+.progress-bar{
+  height:100%;
+  background:var(--green);
+  width:0%;
+  transition:width .3s;
+  border-radius:6px;
+}
+.progress-label{
+  font-size:11px;color:var(--text3);
+  text-align:center;margin-top:6px;
+  display:none;
+}
+
+/* Success modal */
+.modal-bg{
+  display:none;position:fixed;inset:0;
+  background:rgba(0,0,0,0.5);
+  z-index:100;
+  align-items:center;justify-content:center;
+  padding:20px;
+  backdrop-filter:blur(4px);
+}
+.modal-bg.show{display:flex}
+.modal{
+  background:white;
+  border-radius:20px;
+  padding:36px 28px;
+  text-align:center;
+  max-width:320px;width:100%;
+  box-shadow:0 20px 60px rgba(0,0,0,0.2);
+  animation:popIn .25s cubic-bezier(.34,1.56,.64,1);
+}
+@keyframes popIn{from{opacity:0;transform:scale(0.85)}to{opacity:1;transform:scale(1)}}
+.modal-icon{font-size:52px;margin-bottom:12px;line-height:1}
+.modal h3{
+  font-family:'Unbounded',sans-serif;
+  font-size:18px;font-weight:700;
+  color:var(--green);margin-bottom:10px;
+}
+.modal p{font-size:14px;color:var(--text2);line-height:1.6;margin-bottom:6px}
+.modal-ref{
+  font-family:'Unbounded',sans-serif;
+  font-size:13px;font-weight:700;
+  color:var(--text);
+  background:var(--green-light);
+  padding:8px 16px;border-radius:8px;
+  margin:12px 0 20px;
+  display:inline-block;
+}
+.modal-btn{
+  width:100%;
+  padding:14px;
+  background:var(--green);
+  color:white;border:none;
+  border-radius:var(--radius-sm);
+  font-family:'Unbounded',sans-serif;
+  font-size:13px;font-weight:700;
+  cursor:pointer;letter-spacing:1px;
+}
+.modal-btn:hover{background:var(--green-dark)}
+
+/* Error toast */
+.toast{
+  position:fixed;bottom:24px;left:50%;transform:translateX(-50%);
+  background:#1a1f0e;color:white;
+  padding:12px 20px;border-radius:10px;
+  font-size:13px;font-weight:500;
+  white-space:nowrap;z-index:200;
+  opacity:0;transition:opacity .3s;
+  pointer-events:none;
+  max-width:calc(100vw - 32px);
+  white-space:normal;text-align:center;
+}
+.toast.show{opacity:1}
+
+/* Install banner */
+.install-banner{
+  display:none;
+  background:var(--green);
+  color:white;
+  padding:12px 16px;
+  border-radius:var(--radius-sm);
+  margin-bottom:16px;
+  align-items:center;gap:12px;
+  cursor:pointer;
+  animation:slideIn .3s ease;
+}
+.install-banner.show{display:flex}
+.install-banner-text{flex:1;font-size:13px;font-weight:600}
+.install-banner-btn{
+  background:white;color:var(--green);
+  border:none;border-radius:8px;
+  padding:7px 14px;font-size:12px;font-weight:700;
+  cursor:pointer;white-space:nowrap;
+  font-family:'Manrope',sans-serif;
+}
+
+/* Admin panel link */
+.admin-link{
+  text-align:center;margin-top:20px;
+  font-size:12px;color:var(--text3);
+}
+.admin-link a{color:var(--green);text-decoration:none;font-weight:600}
+</style>
+</head>
+<body>
+
+<div class="toast" id="toast"></div>
+
+<div class="modal-bg" id="modal">
+  <div class="modal">
+    <div class="modal-icon">✅</div>
+    <h3>Принято!</h3>
+    <p>Заявка успешно отправлена на производство <b>ШкафеLLA</b></p>
+    <div class="modal-ref" id="modal-ref">#—</div>
+    <p style="font-size:12px;color:var(--text3)">Сохраните номер заявки для отслеживания</p>
+    <button class="modal-btn" onclick="closeModal()">ОТЛИЧНО!</button>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <div class="install-banner" id="install-banner">
+    <div class="install-banner-text">📲 Установите приложение на телефон</div>
+    <button class="install-banner-btn" id="install-btn">Установить</button>
+  </div>
+
+  <div class="header">
+    <div class="logo">ШКАФЕ<span class="ll">LL</span>A</div>
+    <div class="logo-sub">Мебель на заказ</div>
+    <div class="header-line"></div>
+  </div>
+
+  <!-- Карточка 1: Клиент -->
+  <div class="card">
+    <div class="card-title">01 — Клиент</div>
+
+    <div class="field">
+      <label class="lbl">Фамилия / Название компании<span class="req">*</span></label>
+      <input type="text" id="f-client" placeholder="Иванов И.И. или ООО «Пример»">
+    </div>
+
+    <div class="field">
+      <label class="lbl">№ заказа / Адрес объекта<span class="req">*</span></label>
+      <input type="text" id="f-address" placeholder="ул. Ленина 12, кв. 45 или №42">
+    </div>
+  </div>
+
+  <!-- Карточка 2: Вид работ -->
+  <div class="card">
+    <div class="card-title">02 — Вид работ</div>
+
+    <div class="radio-grid" id="radio-grid">
+      <label class="radio-card" onclick="pickRadio(this,'Распил')">
+        <input type="radio" name="workType" value="Распил">
+        <div class="radio-bullet"></div>
+        <span class="radio-label">Распил</span>
+        <span class="radio-icon">🪚</span>
+      </label>
+      <label class="radio-card" onclick="pickRadio(this,'Присадка и распил')">
+        <input type="radio" name="workType" value="Присадка и распил">
+        <div class="radio-bullet"></div>
+        <span class="radio-label">Присадка и распил</span>
+        <span class="radio-icon">🔩</span>
+      </label>
+      <label class="radio-card" onclick="pickRadio(this,'Подпил / переделка')">
+        <input type="radio" name="workType" value="Подпил / переделка">
+        <div class="radio-bullet"></div>
+        <span class="radio-label">Подпил / переделка</span>
+        <span class="radio-icon">✏️</span>
+      </label>
+      <label class="radio-card" onclick="pickRadio(this,'Проектирование + Производство')">
+        <input type="radio" name="workType" value="Проектирование + Производство">
+        <div class="radio-bullet"></div>
+        <span class="radio-label">Проектирование + Производство</span>
+        <span class="radio-icon">📐</span>
+      </label>
+    </div>
+  </div>
+
+  <!-- Карточка 3: Файлы -->
+  <div class="card">
+    <div class="card-title">03 — Файлы</div>
+
+    <div class="file-zone" id="file-zone"
+      ondragover="dragOver(event)" ondragleave="dragLeave(event)" ondrop="dropFiles(event)">
+      <input type="file" id="f-files" multiple onchange="addFiles(this.files)" accept="*/*">
+      <div class="file-icon">📎</div>
+      <div class="file-label">Выбрать или перетащить файлы</div>
+      <div class="file-hint">до 10 файлов · любой формат</div>
+    </div>
+
+    <div class="warn">⚠️ Если общий объём &gt; 100 МБ — используй ссылку ниже</div>
+
+    <div class="file-list" id="file-list"></div>
+
+    <div class="or-divider">или</div>
+
+    <div class="field" style="margin-bottom:0">
+      <label class="lbl">Ссылка на облако</label>
+      <input type="text" id="f-link" placeholder="Яндекс.Диск, Google Drive, Облако...">
+    </div>
+  </div>
+
+  <!-- Карточка 4: Детали -->
+  <div class="card">
+    <div class="card-title">04 — Детали</div>
+
+    <div class="field">
+      <label class="lbl">Комментарий к заказу<span class="req">*</span></label>
+      <textarea id="f-comment" rows="4" placeholder="Материал, размеры, особые пожелания..."></textarea>
+    </div>
+
+    <div class="field" style="margin-bottom:0">
+      <label class="lbl">Желаемая дата готовности<span class="req">*</span></label>
+      <input type="date" id="f-date">
+    </div>
+  </div>
+
+  <!-- Submit -->
+  <button class="submit-btn" id="submit-btn" onclick="submit()">
+    <div class="btn-inner">
+      <div class="spinner" id="spinner"></div>
+      <span id="btn-label">ОТПРАВИТЬ В РАБОТУ</span>
+    </div>
+  </button>
+
+  <div class="progress-wrap" id="progress-wrap">
+    <div class="progress-bar" id="progress-bar"></div>
+  </div>
+  <div class="progress-label" id="progress-label"></div>
+
+  <div class="admin-link">
+    <a href="admin.html">Открыть панель заявок →</a>
+  </div>
+
+</div>
+
+<!-- Firebase -->
+<script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+import { getFirestore, collection, addDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+
+// ══════════════════════════════════════════
+// ⚠️  ВСТАВЬ URL GOOGLE APPS SCRIPT СЮДА
+// (после деплоя скрипта — шаг 1 инструкции)
+// ══════════════════════════════════════════
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbx8AaF2P610Qec315sEXZLmPjysuunXafQu-or3adPKipod_gjkCZURcLbB9y_nmo4a/exec';
+// ══════════════════════════════════════════
+
+// ══════════════════════════════════════════
+// ⚠️  ВСТАВЬ СВОИ НАСТРОЙКИ FIREBASE СЮДА
+// ══════════════════════════════════════════
+const firebaseConfig = {
+  apiKey: "AIzaSyBOoovsBoSOhW9uLFhyMtIKP0XJxxOO1_o",
+  authDomain: "shkafella-f6f78.firebaseapp.com",
+  projectId: "shkafella-f6f78",
+  messagingSenderId: "369275455754",
+  appId: "1:369275455754:web:32b9fc00398c5510c092f3"
+};
+// ══════════════════════════════════════════
+
+// Cloudinary (файлы) — уже настроено!
+const CLOUDINARY_CLOUD = 'dn71z0yi0';
+const CLOUDINARY_PRESET = 'u0n0l5vf';
+
+const app = initializeApp(firebaseConfig);
+const db  = getFirestore(app);
+
+// ─── загрузка файла в Cloudinary ───
+async function uploadToCloudinary(file, onProgress) {
+  const formData = new FormData();
+  formData.append('file', file);
+  formData.append('upload_preset', CLOUDINARY_PRESET);
+  formData.append('folder', 'shkafella_orders');
+
+  return new Promise((resolve, reject) => {
+    const xhr = new XMLHttpRequest();
+    xhr.open('POST', `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD}/auto/upload`);
+    xhr.upload.onprogress = (e) => {
+      if (e.lengthComputable && onProgress) onProgress(e.loaded / e.total);
+    };
+    xhr.onload = () => {
+      if (xhr.status === 200) {
+        const res = JSON.parse(xhr.responseText);
+        resolve({ name: file.name, size: file.size, url: res.secure_url });
+      } else {
+        reject(new Error('Cloudinary error: ' + xhr.responseText));
+      }
+    };
+    xhr.onerror = () => reject(new Error('Сеть недоступна'));
+    xhr.send(formData);
+  });
+}
+
+// ─── файлы ───
+let selectedFiles = [];
+
+window.addFiles = (newFiles) => {
+  for (const f of newFiles) {
+    if (selectedFiles.length >= 10) { showToast('Максимум 10 файлов'); break; }
+    if (!selectedFiles.find(x => x.name === f.name && x.size === f.size)) {
+      selectedFiles.push(f);
+    }
+  }
+  renderFiles();
+};
+
+window.removeFile = (idx) => {
+  selectedFiles.splice(idx, 1);
+  renderFiles();
+};
+
+function renderFiles() {
+  const el = document.getElementById('file-list');
+  el.innerHTML = selectedFiles.map((f, i) => `
+    <div class="file-chip">
+      <span style="font-size:16px">${fileIcon(f.name)}</span>
+      <span class="file-chip-name">${f.name}</span>
+      <span class="file-chip-size">${fmtSize(f.size)}</span>
+      <button class="file-chip-del" onclick="removeFile(${i})">×</button>
+    </div>
+  `).join('');
+}
+
+function fileIcon(name) {
+  const ext = name.split('.').pop().toLowerCase();
+  if (['jpg','jpeg','png','gif','webp'].includes(ext)) return '🖼️';
+  if (['mp4','mov','avi','mkv'].includes(ext)) return '🎬';
+  if (['pdf'].includes(ext)) return '📄';
+  if (['dwg','dxf'].includes(ext)) return '📐';
+  if (['xlsx','xls','csv'].includes(ext)) return '📊';
+  if (['zip','rar','7z'].includes(ext)) return '📦';
+  return '📎';
+}
+
+function fmtSize(b) {
+  if (b > 1024*1024) return (b/1024/1024).toFixed(1)+' МБ';
+  return Math.round(b/1024)+' КБ';
+}
+
+// drag-n-drop
+window.dragOver  = (e) => { e.preventDefault(); document.getElementById('file-zone').classList.add('dragover'); };
+window.dragLeave = ()  => { document.getElementById('file-zone').classList.remove('dragover'); };
+window.dropFiles = (e) => { e.preventDefault(); dragLeave(); addFiles(e.dataTransfer.files); };
+
+// ─── radio ───
+window.pickRadio = (el, val) => {
+  document.querySelectorAll('.radio-card').forEach(c => c.classList.remove('checked'));
+  el.classList.add('checked');
+  el.querySelector('input').checked = true;
+};
+
+// ─── submit ───
+window.submit = async () => {
+  const client  = document.getElementById('f-client').value.trim();
+  const address = document.getElementById('f-address').value.trim();
+  const workType= document.querySelector('input[name="workType"]:checked')?.value;
+  const comment = document.getElementById('f-comment').value.trim();
+  const date    = document.getElementById('f-date').value;
+  const link    = document.getElementById('f-link').value.trim();
+
+  if (!client)   { showToast('Укажите фамилию или компанию'); return; }
+  if (!address)  { showToast('Укажите адрес или № заказа'); return; }
+  if (!workType) { showToast('Выберите вид работ'); return; }
+  if (!comment)  { showToast('Добавьте комментарий'); return; }
+  if (!date)     { showToast('Укажите желаемую дату'); return; }
+
+  const btn  = document.getElementById('submit-btn');
+  const spin = document.getElementById('spinner');
+  const lbl  = document.getElementById('btn-label');
+  btn.disabled = true;
+  spin.style.display = 'block';
+  lbl.textContent = 'Отправляю...';
+
+  const progressWrap = document.getElementById('progress-wrap');
+  const progressBar  = document.getElementById('progress-bar');
+  const progressLbl  = document.getElementById('progress-label');
+
+  try {
+    // Upload files to Cloudinary
+    const fileUrls = [];
+    if (selectedFiles.length > 0) {
+      progressWrap.style.display = 'block';
+      progressLbl.style.display  = 'block';
+      for (let i = 0; i < selectedFiles.length; i++) {
+        const f = selectedFiles[i];
+        progressLbl.textContent = `Загрузка файла ${i+1} из ${selectedFiles.length}: ${f.name}`;
+        const baseProgress = (i / selectedFiles.length) * 75;
+        const fileData = await uploadToCloudinary(f, (p) => {
+          progressBar.style.width = (baseProgress + p * (75 / selectedFiles.length)) + '%';
+        });
+        fileUrls.push(fileData);
+      }
+      progressBar.style.width = '80%';
+    }
+
+    progressLbl.textContent = 'Сохраняю заявку...';
+
+    // Generate order ref
+    const refNum = 'SHL-' + Date.now().toString(36).toUpperCase().slice(-6);
+
+    // Save to Firestore
+    await addDoc(collection(db, 'orders'), {
+      ref: refNum,
+      client, address, workType, comment, date,
+      externalLink: link,
+      files: fileUrls,
+      status: 'new',
+      createdAt: serverTimestamp(),
+    });
+
+    // Send to Google Sheets (параллельно, не блокирует если упадёт)
+    if (GAS_URL && GAS_URL !== 'YOUR_APPS_SCRIPT_URL') {
+      progressLbl.textContent = 'Записываю в таблицу...';
+      try {
+        await fetch(GAS_URL, {
+          method: 'POST',
+          mode: 'no-cors', // GAS не поддерживает CORS, но данные всё равно придут
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ ref: refNum, client, address, workType, comment, date, externalLink: link, files: fileUrls }),
+        });
+      } catch (gasErr) {
+        console.warn('GAS error (не критично):', gasErr);
+      }
+    }
+
+    progressBar.style.width = '100%';
+    document.getElementById('modal-ref').textContent = '#' + refNum;
+
+    setTimeout(() => {
+      progressWrap.style.display = 'none';
+      progressLbl.style.display  = 'none';
+      document.getElementById('modal').classList.add('show');
+    }, 400);
+
+  } catch (e) {
+    console.error(e);
+    showToast('Ошибка: ' + (e.message || 'Проверьте интернет'));
+    btn.disabled = false;
+    spin.style.display = 'none';
+    lbl.textContent = 'ОТПРАВИТЬ В РАБОТУ';
+    progressWrap.style.display = 'none';
+    progressLbl.style.display  = 'none';
+  }
+};
+
+window.closeModal = () => {
+  document.getElementById('modal').classList.remove('show');
+  document.getElementById('f-client').value  = '';
+  document.getElementById('f-address').value = '';
+  document.getElementById('f-comment').value = '';
+  document.getElementById('f-date').value    = '';
+  document.getElementById('f-link').value    = '';
+  document.getElementById('f-files').value   = '';
+  document.querySelectorAll('.radio-card').forEach(c => c.classList.remove('checked'));
+  selectedFiles = [];
+  renderFiles();
+  const btn = document.getElementById('submit-btn');
+  btn.disabled = false;
+  document.getElementById('spinner').style.display = 'none';
+  document.getElementById('btn-label').textContent = 'ОТПРАВИТЬ В РАБОТУ';
+  document.getElementById('progress-bar').style.width = '0%';
+};
+
+// ─── toast ───
+window.showToast = (msg) => {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2800);
+};
+
+// ─── PWA install ───
+let deferredPrompt;
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+  document.getElementById('install-banner').classList.add('show');
+});
+document.getElementById('install-btn').addEventListener('click', async () => {
+  if (!deferredPrompt) return;
+  deferredPrompt.prompt();
+  const { outcome } = await deferredPrompt.userChoice;
+  deferredPrompt = null;
+  document.getElementById('install-banner').classList.remove('show');
+});
+
+// ─── Service Worker ───
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('sw.js').catch(() => {});
+}
+
+// ─── Set min date ───
+document.getElementById('f-date').min = new Date().toISOString().split('T')[0];
+</script>
+</body>
+</html>

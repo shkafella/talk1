@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ШкафеLLA — Заявки</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Unbounded:wght@400;700;900&family=Manrope:wght@400;500;600;700&display=swap');
+
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --green:#83b541;--green-dark:#5e8a2a;--green-light:#f0f7e6;
+  --text:#1a1f0e;--text2:#4a5240;--text3:#8a9478;
+  --border:#dde8c8;--bg:#f7f9f3;--surface:#fff;
+  --red:#c0392b;--orange:#e67e22;--radius:12px;
+}
+body{font-family:'Manrope',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+.topbar{background:var(--surface);border-bottom:1px solid var(--border);padding:14px 20px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:10}
+.logo{font-family:'Unbounded',sans-serif;font-size:18px;font-weight:900;letter-spacing:-1px}
+.logo .ll{color:var(--green)}
+.topbar-right{display:flex;gap:8px;align-items:center}
+.badge-count{background:var(--green);color:white;border-radius:20px;padding:3px 10px;font-size:12px;font-weight:700}
+.filter-bar{padding:14px 20px;display:flex;gap:8px;flex-wrap:wrap;border-bottom:1px solid var(--border);background:var(--surface)}
+.filter-btn{padding:6px 14px;border:1.5px solid var(--border);border-radius:20px;background:none;font-size:12px;font-weight:600;cursor:pointer;font-family:'Manrope',sans-serif;color:var(--text2);transition:all .15s}
+.filter-btn:hover,.filter-btn.active{background:var(--green);border-color:var(--green);color:white}
+.orders-wrap{padding:16px 20px;max-width:900px;margin:0 auto}
+.order-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:18px 20px;margin-bottom:12px;cursor:pointer;transition:all .15s;border-left:4px solid transparent}
+.order-card:hover{box-shadow:0 4px 16px rgba(0,0,0,0.07);transform:translateY(-1px)}
+.order-card.new{border-left-color:var(--green)}
+.order-card.in-progress{border-left-color:var(--orange)}
+.order-card.done{border-left-color:#aaa}
+.order-top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:10px}
+.order-ref{font-family:'Unbounded',sans-serif;font-size:11px;font-weight:700;color:var(--green)}
+.order-date-created{font-size:11px;color:var(--text3)}
+.order-client{font-size:16px;font-weight:700;color:var(--text);margin-bottom:2px}
+.order-address{font-size:12px;color:var(--text3)}
+.order-mid{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.tag{padding:4px 10px;border-radius:6px;font-size:11px;font-weight:700}
+.tag-work{background:var(--green-light);color:var(--green-dark)}
+.tag-date{background:#fff8e6;color:#a06010}
+.tag-files{background:#f0f0f0;color:#555}
+.order-comment{font-size:13px;color:var(--text2);margin-top:10px;line-height:1.5;background:var(--bg);padding:10px 12px;border-radius:8px}
+.order-actions{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}
+.action-btn{padding:7px 14px;border-radius:8px;border:none;font-size:12px;font-weight:700;cursor:pointer;font-family:'Manrope',sans-serif;transition:all .15s}
+.btn-progress{background:#fff3e0;color:var(--orange)}
+.btn-progress:hover{background:var(--orange);color:white}
+.btn-done{background:var(--green-light);color:var(--green-dark)}
+.btn-done:hover{background:var(--green);color:white}
+.btn-del{background:#fdf0ee;color:var(--red)}
+.btn-del:hover{background:var(--red);color:white}
+.status-badge{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:6px;font-size:11px;font-weight:700}
+.status-new{background:var(--green-light);color:var(--green-dark)}
+.status-in-progress{background:#fff3e0;color:var(--orange)}
+.status-done{background:#f0f0f0;color:#777}
+.files-section{margin-top:10px}
+.file-link{display:inline-flex;align-items:center;gap:5px;font-size:12px;color:var(--green);text-decoration:none;padding:4px 8px;background:var(--green-light);border-radius:6px;margin:3px 2px;font-weight:600}
+.file-link:hover{background:var(--green);color:white}
+.empty{text-align:center;padding:60px 20px;color:var(--text3)}
+.empty-icon{font-size:48px;margin-bottom:12px;opacity:0.4}
+.loading{text-align:center;padding:40px;color:var(--text3);font-size:14px}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="logo">ШКАФЕ<span class="ll">LL</span>A</div>
+  <div class="topbar-right">
+    <span style="font-size:13px;color:var(--text3)">Панель заявок</span>
+    <span class="badge-count" id="count-badge">0</span>
+  </div>
+</div>
+
+<div class="filter-bar">
+  <button class="filter-btn active" onclick="setFilter('all',this)">Все</button>
+  <button class="filter-btn" onclick="setFilter('new',this)">🟢 Новые</button>
+  <button class="filter-btn" onclick="setFilter('in-progress',this)">🟠 В работе</button>
+  <button class="filter-btn" onclick="setFilter('done',this)">⚪ Готово</button>
+</div>
+
+<div class="orders-wrap" id="orders-wrap">
+  <div class="loading">Загрузка заявок...</div>
+</div>
+
+<script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+import { getFirestore, collection, onSnapshot, doc, updateDoc, deleteDoc, query, orderBy } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+
+// ══════════════════════════════════════════
+// ⚠️  ТЕ ЖЕ НАСТРОЙКИ FIREBASE ЧТО В index.html
+// ══════════════════════════════════════════
+const firebaseConfig = {
+  apiKey: "AIzaSyBOoovsBoSOhW9uLFhyMtIKP0XJxxOO1_o",
+  authDomain: "shkafella-f6f78.firebaseapp.com",
+  projectId: "shkafella-f6f78",
+  messagingSenderId: "369275455754",
+  appId: "1:369275455754:web:32b9fc00398c5510c092f3"
+};
+// ══════════════════════════════════════════
+
+const app = initializeApp(firebaseConfig);
+const db  = getFirestore(app);
+
+let orders = [];
+let currentFilter = 'all';
+
+const statusLabel = { new:'Новая', 'in-progress':'В работе', done:'Готово' };
+const statusClass = { new:'status-new', 'in-progress':'status-in-progress', done:'status-done' };
+
+function fmtDate(ts) {
+  if (!ts) return '—';
+  const d = ts.toDate ? ts.toDate() : new Date(ts);
+  return d.toLocaleDateString('ru-RU',{day:'numeric',month:'long',hour:'2-digit',minute:'2-digit'});
+}
+function fmtDeadline(s) {
+  if (!s) return '—';
+  const d = new Date(s);
+  return d.toLocaleDateString('ru-RU',{day:'numeric',month:'long',year:'numeric'});
+}
+function fileIcon(name) {
+  const ext = (name||'').split('.').pop().toLowerCase();
+  if (['jpg','jpeg','png','gif','webp'].includes(ext)) return '🖼️';
+  if (['mp4','mov','avi'].includes(ext)) return '🎬';
+  if (['pdf'].includes(ext)) return '📄';
+  if (['dwg','dxf'].includes(ext)) return '📐';
+  if (['xlsx','xls'].includes(ext)) return '📊';
+  return '📎';
+}
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+
+function render() {
+  const wrap = document.getElementById('orders-wrap');
+  const filtered = currentFilter === 'all' ? orders : orders.filter(o => o.status === currentFilter);
+  document.getElementById('count-badge').textContent = filtered.length;
+  if (!filtered.length) {
+    wrap.innerHTML = `<div class="empty"><div class="empty-icon">📋</div><p>Нет заявок</p></div>`;
+    return;
+  }
+  wrap.innerHTML = filtered.map(o => `
+    <div class="order-card ${o.status||'new'}" id="card-${o.id}">
+      <div class="order-top">
+        <div>
+          <div class="order-ref">${esc(o.ref||'—')}</div>
+          <div class="order-client">${esc(o.client)}</div>
+          <div class="order-address">📍 ${esc(o.address||'—')}</div>
+        </div>
+        <div style="text-align:right;flex-shrink:0">
+          <div class="status-badge ${statusClass[o.status]||'status-new'}">${statusLabel[o.status]||'Новая'}</div>
+          <div class="order-date-created" style="margin-top:6px">${fmtDate(o.createdAt)}</div>
+        </div>
+      </div>
+      <div class="order-mid">
+        <span class="tag tag-work">🔧 ${esc(o.workType||'—')}</span>
+        <span class="tag tag-date">📅 до ${fmtDeadline(o.date)}</span>
+        ${(o.files||[]).length ? `<span class="tag tag-files">📎 ${o.files.length} файл(а)</span>` : ''}
+      </div>
+      ${o.comment ? `<div class="order-comment">${esc(o.comment)}</div>` : ''}
+      ${(o.files||[]).length ? `
+        <div class="files-section">
+          ${o.files.map(f=>`<a href="${f.url}" target="_blank" class="file-link">${fileIcon(f.name)} ${esc(f.name)}</a>`).join('')}
+        </div>` : ''}
+      ${o.externalLink ? `<div style="margin-top:8px"><a href="${esc(o.externalLink)}" target="_blank" class="file-link">🔗 Облачная ссылка</a></div>` : ''}
+      <div class="order-actions">
+        ${o.status !== 'in-progress' ? `<button class="action-btn btn-progress" onclick="setStatus('${o.id}','in-progress')">▶ В работу</button>` : ''}
+        ${o.status !== 'done' ? `<button class="action-btn btn-done" onclick="setStatus('${o.id}','done')">✓ Готово</button>` : ''}
+        <button class="action-btn btn-del" onclick="delOrder('${o.id}')">✕ Удалить</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+window.setFilter = (f, btn) => {
+  currentFilter = f;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  render();
+};
+
+window.setStatus = async (id, status) => {
+  await updateDoc(doc(db,'orders',id),{status});
+};
+
+window.delOrder = async (id) => {
+  if (!confirm('Удалить заявку?')) return;
+  await deleteDoc(doc(db,'orders',id));
+};
+
+// Live updates
+const q = query(collection(db,'orders'), orderBy('createdAt','desc'));
+onSnapshot(q, snap => {
+  orders = snap.docs.map(d => ({id:d.id,...d.data()}));
+  render();
+});
+</script>
+</body>
+</html>

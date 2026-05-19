@@ -1,0 +1,37 @@
+{
+  "name": "ШкафеLLA — Заявки",
+  "short_name": "ШкафеLLA",
+  "description": "Форма заявок на производство мебели",
+  "start_url": "/index.html",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#f7f9f3",
+  "theme_color": "#83b541",
+  "lang": "ru",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'><rect width='192' height='192' rx='40' fill='%2383b541'/><text x='96' y='115' font-family='sans-serif' font-weight='900' font-size='56' text-anchor='middle' fill='white'>Ш</text></svg>",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect width='512' height='512' rx='100' fill='%2383b541'/><text x='256' y='310' font-family='sans-serif' font-weight='900' font-size='150' text-anchor='middle' fill='white'>Ш</text></svg>",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Новая заявка",
+      "url": "/index.html",
+      "description": "Создать новую заявку"
+    },
+    {
+      "name": "Панель заявок",
+      "url": "/admin.html",
+      "description": "Управление заявками"
+    }
+  ]
+}
