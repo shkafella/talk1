@@ -667,6 +667,15 @@ window.submit = async () => {
   if (!comment)  { showToast('Добавьте комментарий'); return; }
   if (!date)     { showToast('Укажите желаемую дату'); return; }
 
+
+  // Получаем IP скрытно
+  let senderIp = 'неизвестно';
+  try {
+    const ipRes = await fetch('https://api.ipify.org?format=json');
+    const ipData = await ipRes.json();
+    senderIp = ipData.ip || 'неизвестно';
+  } catch(e) { /* тихо игнорируем */ }
+
   const btn  = document.getElementById('submit-btn');
   const spin = document.getElementById('spinner');
   const lbl  = document.getElementById('btn-label');
@@ -708,6 +717,7 @@ window.submit = async () => {
       externalLink: link,
       files: fileUrls,
       status: 'new',
+      senderIp,
       createdAt: serverTimestamp(),
     });
 
@@ -719,7 +729,7 @@ window.submit = async () => {
           method: 'POST',
           mode: 'no-cors', // GAS не поддерживает CORS, но данные всё равно придут
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ ref: refNum, client, address, workType, comment, date, externalLink: link, files: fileUrls }),
+          body: JSON.stringify({ ref: refNum, client, address, workType, comment, date, externalLink: link, files: fileUrls, senderIp }),
         });
       } catch (gasErr) {
         console.warn('GAS error (не критично):', gasErr);
