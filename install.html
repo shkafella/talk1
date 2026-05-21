@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ШкафеLLA — Установка приложения</title>
+<meta name="theme-color" content="#83b541">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Unbounded:wght@700;900&family=Manrope:wght@400;500;600;700&display=swap');
+
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --green:#83b541;--green-dark:#5e8a2a;--green-light:#f0f7e6;
+  --text:#1a1f0e;--text2:#4a5240;--text3:#8a9478;
+  --border:#dde8c8;--bg:#f7f9f3;--surface:#fff;
+  --radius:16px;--radius-sm:10px;
+}
+body{font-family:'Manrope',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding:0 0 40px}
+
+body::before{
+  content:'';position:fixed;inset:0;
+  background:radial-gradient(ellipse 80% 50% at 110% -10%,rgba(131,181,65,.12) 0%,transparent 60%);
+  pointer-events:none;z-index:0;
+}
+
+.wrap{position:relative;z-index:1;max-width:560px;margin:0 auto;padding:0 16px}
+
+/* Header */
+.header{padding:32px 0 24px;text-align:center}
+.logo{font-family:'Unbounded',sans-serif;font-size:clamp(28px,8vw,44px);font-weight:900;letter-spacing:-2px;color:var(--text)}
+.logo .ll{color:var(--green)}
+.logo-sub{font-family:'Unbounded',sans-serif;font-size:9px;letter-spacing:4px;color:var(--text3);text-transform:uppercase;margin:6px 0 16px}
+.header-line{width:48px;height:3px;background:var(--green);margin:0 auto 24px;border-radius:2px}
+.header h1{font-size:clamp(18px,5vw,24px);font-weight:700;color:var(--text);margin-bottom:8px}
+.header p{font-size:14px;color:var(--text2);line-height:1.6}
+
+/* Device selector */
+.device-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:24px 0}
+.device-btn{
+  background:var(--surface);border:2px solid var(--border);
+  border-radius:var(--radius);padding:20px 12px;
+  cursor:pointer;text-align:center;transition:all .2s;
+  display:flex;flex-direction:column;align-items:center;gap:8px;
+}
+.device-btn:hover{border-color:var(--green);background:var(--green-light)}
+.device-btn.active{border-color:var(--green);background:var(--green-light);box-shadow:0 0 0 3px rgba(131,181,65,.15)}
+.device-icon{font-size:32px;line-height:1}
+.device-label{font-size:12px;font-weight:700;color:var(--text2)}
+.device-sub{font-size:10px;color:var(--text3)}
+
+/* Instructions */
+.instructions{display:none}
+.instructions.show{display:block;animation:fadeIn .25s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+.instr-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:12px}
+.instr-header{background:var(--green);padding:16px 20px;display:flex;align-items:center;gap:12px}
+.instr-header-icon{font-size:24px}
+.instr-header-text h2{font-family:'Unbounded',sans-serif;font-size:13px;font-weight:700;color:#fff;letter-spacing:0.5px}
+.instr-header-text p{font-size:11px;color:rgba(255,255,255,.75);margin-top:2px}
+
+.steps{padding:20px}
+.step{display:flex;gap:14px;margin-bottom:18px}
+.step:last-child{margin-bottom:0}
+.step-num{
+  width:28px;height:28px;border-radius:50%;
+  background:var(--green-light);border:2px solid var(--green);
+  display:flex;align-items:center;justify-content:center;
+  font-size:12px;font-weight:700;color:var(--green);
+  flex-shrink:0;margin-top:1px;
+}
+.step-body{flex:1}
+.step-title{font-size:14px;font-weight:700;color:var(--text);margin-bottom:3px}
+.step-desc{font-size:13px;color:var(--text2);line-height:1.5}
+.step-desc b{color:var(--text);font-weight:700}
+.step-img{
+  margin-top:10px;
+  background:var(--bg);border:1px solid var(--border);
+  border-radius:var(--radius-sm);padding:14px 16px;
+  font-size:13px;color:var(--text2);
+  display:flex;align-items:center;gap:10px;
+  line-height:1.4;
+}
+.step-img-icon{font-size:22px;flex-shrink:0}
+
+/* Tip */
+.tip{
+  background:var(--green-light);border:1px solid #c8e49a;
+  border-radius:var(--radius-sm);padding:14px 16px;
+  font-size:13px;color:var(--green-dark);line-height:1.5;
+  display:flex;gap:10px;align-items:flex-start;margin-top:4px;
+}
+.tip-icon{font-size:18px;flex-shrink:0;margin-top:1px}
+
+/* App link button */
+.open-btn{
+  display:block;width:100%;
+  padding:16px;background:var(--green);color:#fff;
+  border:none;border-radius:var(--radius);
+  font-family:'Unbounded',sans-serif;font-size:13px;font-weight:700;
+  letter-spacing:1px;text-align:center;text-decoration:none;
+  cursor:pointer;transition:all .2s;margin-top:16px;
+  text-transform:uppercase;
+}
+.open-btn:hover{background:var(--green-dark)}
+
+/* APK download */
+.apk-box{
+  background:var(--surface);border:2px solid var(--green);
+  border-radius:var(--radius);padding:20px;margin-top:4px;
+  text-align:center;
+}
+.apk-icon{font-size:48px;margin-bottom:8px}
+.apk-title{font-family:'Unbounded',sans-serif;font-size:14px;font-weight:700;color:var(--text);margin-bottom:6px}
+.apk-desc{font-size:13px;color:var(--text2);line-height:1.5;margin-bottom:16px}
+.apk-btn{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:13px 24px;background:var(--green);color:#fff;
+  border-radius:var(--radius-sm);text-decoration:none;
+  font-size:13px;font-weight:700;transition:all .2s;
+}
+.apk-btn:hover{background:var(--green-dark)}
+.apk-or{font-size:12px;color:var(--text3);margin:14px 0}
+
+/* Footer */
+.footer{text-align:center;padding-top:24px;font-size:12px;color:var(--text3)}
+.footer a{color:var(--green);text-decoration:none;font-weight:600}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="header">
+    <div class="logo">ШКАФЕ<span class="ll">LL</span>A</div>
+    <div class="logo-sub">Мебель на заказ</div>
+    <div class="header-line"></div>
+    <h1>Установка приложения</h1>
+    <p>Выберите своё устройство — покажем как установить за 3 шага</p>
+  </div>
+
+  <!-- Device selector -->
+  <div class="device-grid">
+    <button class="device-btn" onclick="showInstr('iphone')">
+      <div class="device-icon">🍎</div>
+      <div class="device-label">iPhone</div>
+      <div class="device-sub">iOS · Safari</div>
+    </button>
+    <button class="device-btn" onclick="showInstr('android')">
+      <div class="device-icon">🤖</div>
+      <div class="device-label">Android</div>
+      <div class="device-sub">APK · Chrome</div>
+    </button>
+    <button class="device-btn" onclick="showInstr('desktop')">
+      <div class="device-icon">💻</div>
+      <div class="device-label">Компьютер</div>
+      <div class="device-sub">Windows · Mac</div>
+    </button>
+  </div>
+
+  <!-- iPhone -->
+  <div class="instructions" id="instr-iphone">
+    <div class="instr-card">
+      <div class="instr-header">
+        <div class="instr-header-icon">🍎</div>
+        <div class="instr-header-text">
+          <h2>Установка на iPhone</h2>
+          <p>Только через Safari — займёт 30 секунд</p>
+        </div>
+      </div>
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-body">
+            <div class="step-title">Открой ссылку в Safari</div>
+            <div class="step-desc">Обязательно в браузере <b>Safari</b> — через Chrome или Яндекс не получится.</div>
+            <div class="step-img">
+              <div class="step-img-icon">⚠️</div>
+              Если открылся другой браузер — скопируй ссылку и вставь в Safari
+            </div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-body">
+            <div class="step-title">Нажми кнопку «Поделиться»</div>
+            <div class="step-desc">Внизу экрана найди кнопку <b>📤</b> (квадрат со стрелкой вверх) и нажми её.</div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-body">
+            <div class="step-title">«На экран Домой»</div>
+            <div class="step-desc">Прокрути список действий вниз, найди <b>«На экран «Домой»»</b> → нажми <b>«Добавить»</b>.</div>
+            <div class="step-img">
+              <div class="step-img-icon">✅</div>
+              Готово! Иконка ШкафеLLA появится на рабочем столе
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="tip">
+      <div class="tip-icon">💡</div>
+      Приложение работает как обычное — открывается без браузера, занимает почти нет места на телефоне
+    </div>
+    <a href="https://app.shkafella.ru" class="open-btn">Открыть приложение в Safari →</a>
+  </div>
+
+  <!-- Android -->
+  <div class="instructions" id="instr-android">
+    <div class="instr-card">
+      <div class="instr-header">
+        <div class="instr-header-icon">🤖</div>
+        <div class="instr-header-text">
+          <h2>Установка на Android</h2>
+          <p>Скачай APK файл — устанавливается как обычное приложение</p>
+        </div>
+      </div>
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-body">
+            <div class="step-title">Скачай файл приложения</div>
+            <div class="step-desc">Нажми кнопку ниже и скачай файл <b>ШкафеLLA.apk</b></div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-body">
+            <div class="step-title">Открой скачанный файл</div>
+            <div class="step-desc">Зайди в папку <b>«Загрузки»</b> на телефоне и нажми на файл <b>ШкафеLLA.apk</b></div>
+            <div class="step-img">
+              <div class="step-img-icon">⚠️</div>
+              Если телефон спросит разрешение — нажми <b>«Разрешить»</b> или <b>«Установить из неизвестных источников»</b>
+            </div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-body">
+            <div class="step-title">Нажми «Установить»</div>
+            <div class="step-desc">Подтверди установку — приложение появится на рабочем столе.</div>
+            <div class="step-img">
+              <div class="step-img-icon">✅</div>
+              Готово! Открывай ШкафеLLA как обычное приложение
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="apk-box">
+      <div class="apk-icon">📦</div>
+      <div class="apk-title">ШкафеLLA.apk</div>
+      <div class="apk-desc">Файл приложения для Android.<br>Размер: ~3 МБ · Безопасно · Без рекламы</div>
+      <a href="ШкафеLLA.apk" download class="apk-btn">⬇️ Скачать приложение</a>
+      <div class="apk-or">или</div>
+    </div>
+
+    <div class="tip" style="margin-top:12px">
+      <div class="tip-icon">💡</div>
+      Если не хочешь скачивать файл — можно установить через Chrome: открой <b>app.shkafella.ru</b> в Chrome → меню (⋮) → «Добавить на главный экран»
+    </div>
+    <a href="https://app.shkafella.ru" class="open-btn" style="background:#4285f4">Открыть в Chrome →</a>
+  </div>
+
+  <!-- Desktop -->
+  <div class="instructions" id="instr-desktop">
+    <div class="instr-card">
+      <div class="instr-header">
+        <div class="instr-header-icon">💻</div>
+        <div class="instr-header-text">
+          <h2>Установка на компьютер</h2>
+          <p>Windows или Mac — через Chrome или Edge</p>
+        </div>
+      </div>
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-body">
+            <div class="step-title">Открой в Chrome или Edge</div>
+            <div class="step-desc">Скопируй ссылку <b>app.shkafella.ru</b> и открой в браузере <b>Google Chrome</b> или <b>Microsoft Edge</b>.</div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-body">
+            <div class="step-title">Найди иконку установки</div>
+            <div class="step-desc">В правой части адресной строки появится иконка <b>📥</b> или компьютера — нажми на неё.</div>
+            <div class="step-img">
+              <div class="step-img-icon">💡</div>
+              Если иконки нет — меню (⋮ или ...) → «Установить ШкафеLLA» или «Приложения» → «Установить»
+            </div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-body">
+            <div class="step-title">Нажми «Установить»</div>
+            <div class="step-desc">Подтверди установку — приложение появится в меню «Пуск» (Windows) или в Launchpad (Mac).</div>
+            <div class="step-img">
+              <div class="step-img-icon">✅</div>
+              Готово! Работает как обычная программа, даже без браузера
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="tip">
+      <div class="tip-icon">💡</div>
+      Приложение запускается отдельным окном без браузерных панелей — удобнее чем открывать сайт каждый раз
+    </div>
+    <a href="https://app.shkafella.ru" class="open-btn">Открыть приложение →</a>
+  </div>
+
+  <div class="footer">
+    <a href="https://app.shkafella.ru">Перейти к форме заявки</a> · ШкафеLLA © 2026
+  </div>
+
+</div>
+
+<script>
+function showInstr(type) {
+  // Hide all
+  document.querySelectorAll('.instructions').forEach(el => el.classList.remove('show'));
+  document.querySelectorAll('.device-btn').forEach(el => el.classList.remove('active'));
+
+  // Show selected
+  document.getElementById('instr-' + type).classList.add('show');
+  event.currentTarget.classList.add('active');
+
+  // Scroll to instructions
+  setTimeout(() => {
+    document.getElementById('instr-' + type).scrollIntoView({behavior:'smooth', block:'start'});
+  }, 50);
+}
+
+// Auto-detect device
+window.addEventListener('load', () => {
+  const ua = navigator.userAgent;
+  if (/iPhone|iPad/.test(ua)) {
+    document.querySelector('[onclick="showInstr(\'iphone\')"]').click();
+  } else if (/Android/.test(ua)) {
+    document.querySelector('[onclick="showInstr(\'android\')"]').click();
+  } else {
+    document.querySelector('[onclick="showInstr(\'desktop\')"]').click();
+  }
+});
+</script>
+</body>
+</html>
