@@ -1,5 +1,5 @@
-const CACHE = 'shkafella-v1';
-const ASSETS = ['/', '/index.html', '/admin.html', '/manifest.json'];
+const CACHE = 'shkafella-v2';
+const ASSETS = ['/', '/index.html', '/admin.html', '/manifest.json', '/blank-shkafella-2025.1.10.xlsx'];
 
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(ASSETS)).catch(() => {}));

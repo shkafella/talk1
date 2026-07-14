@@ -35,6 +35,14 @@ body::before{
 .logo-sub{font-family:'Unbounded',sans-serif;font-size:9px;font-weight:400;letter-spacing:4px;color:var(--text3);text-transform:uppercase;margin-bottom:20px}
 .header-line{width:48px;height:3px;background:var(--green);margin:0 auto;border-radius:2px}
 
+/* Download */
+.download-card{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:16px 18px;margin-bottom:16px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);box-shadow:0 2px 24px rgba(131,181,65,.06);color:var(--text);text-decoration:none}
+.download-copy{min-width:0}
+.download-title{font-size:14px;font-weight:800;color:var(--text);margin-bottom:2px}
+.download-hint{font-size:12px;color:var(--text3)}
+.download-link{flex-shrink:0;padding:10px 14px;border-radius:var(--radius-sm);background:var(--green);color:white;font-size:12px;font-weight:800}
+.download-card:hover .download-link{background:var(--green-dark)}
+
 /* Card */
 .card{background:var(--surface);border-radius:var(--radius);padding:28px 24px;border:1px solid var(--border);box-shadow:0 2px 24px rgba(131,181,65,.06);margin-bottom:16px}
 .card-title{font-family:'Unbounded',sans-serif;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--green);margin-bottom:22px;display:flex;align-items:center;gap:8px}
@@ -144,6 +152,14 @@ textarea{resize:vertical;min-height:90px;line-height:1.5}
     <div class="header-line"></div>
   </div>
 
+  <a class="download-card" href="blank-shkafella-2025.1.10.xlsx" download="Бланк Шкафелла 2025.1.10.xlsx">
+    <span class="download-copy">
+      <span class="download-title">Бланк заявки</span>
+      <span class="download-hint">XLSX для заполнения</span>
+    </span>
+    <span class="download-link">Скачать</span>
+  </a>
+
   <!-- 01 Клиент -->
   <div class="card">
     <div class="card-title">01 — Клиент</div>
@@ -216,6 +232,37 @@ textarea{resize:vertical;min-height:90px;line-height:1.5}
     <div class="field" style="margin-bottom:0">
       <label class="lbl">Желаемая дата готовности<span class="req">*</span></label>
       <input type="date" id="f-date">
+    </div>
+  </div>
+
+  <!-- 05 Форма оплаты -->
+  <div class="card">
+    <div class="card-title">05 — Форма оплаты</div>
+    <div class="radio-grid">
+      <label class="radio-card" onclick="pickRadio(this)">
+        <input type="radio" name="paymentForm" value="Наличными">
+        <div class="radio-bullet"></div>
+        <span class="radio-label">Наличными</span>
+        <span class="radio-icon">💵</span>
+      </label>
+      <label class="radio-card" onclick="pickRadio(this)">
+        <input type="radio" name="paymentForm" value="По QR коду">
+        <div class="radio-bullet"></div>
+        <span class="radio-label">По QR коду</span>
+        <span class="radio-icon">▦</span>
+      </label>
+      <label class="radio-card" onclick="pickRadio(this)">
+        <input type="radio" name="paymentForm" value="Счет без НДС">
+        <div class="radio-bullet"></div>
+        <span class="radio-label">Счет без НДС</span>
+        <span class="radio-icon">📄</span>
+      </label>
+      <label class="radio-card" onclick="pickRadio(this)">
+        <input type="radio" name="paymentForm" value="Счет с НДС 22%">
+        <div class="radio-bullet"></div>
+        <span class="radio-label">Счет с НДС 22%</span>
+        <span class="radio-icon">📄</span>
+      </label>
     </div>
   </div>
 
@@ -310,7 +357,7 @@ window.dragOver  = (e) => { e.preventDefault(); document.getElementById('file-zo
 window.dragLeave = ()  => { document.getElementById('file-zone').classList.remove('dragover'); };
 window.dropFiles = (e) => { e.preventDefault(); dragLeave(); addFiles(e.dataTransfer.files); };
 window.pickRadio = (el) => {
-  document.querySelectorAll('.radio-card').forEach(c => c.classList.remove('checked'));
+  el.closest('.radio-grid').querySelectorAll('.radio-card').forEach(c => c.classList.remove('checked'));
   el.classList.add('checked');
   el.querySelector('input').checked = true;
 };
@@ -321,6 +368,7 @@ window.submit = async () => {
   const workType= document.querySelector('input[name="workType"]:checked')?.value;
   const comment = document.getElementById('f-comment').value.trim();
   const date    = document.getElementById('f-date').value;
+  const paymentForm = document.querySelector('input[name="paymentForm"]:checked')?.value;
   const link    = document.getElementById('f-link').value.trim();
 
   if (!client)   { showToast('Укажите фамилию или компанию'); return; }
@@ -328,6 +376,7 @@ window.submit = async () => {
   if (!workType) { showToast('Выберите вид работ'); return; }
   if (!comment)  { showToast('Добавьте комментарий'); return; }
   if (!date)     { showToast('Укажите желаемую дату'); return; }
+  if (!paymentForm) { showToast('Выберите форму оплаты'); return; }
 
   let senderIp = 'неизвестно';
   try { const r = await fetch('https://api.ipify.org?format=json'); const d = await r.json(); senderIp = d.ip||'неизвестно'; } catch(e){}
@@ -359,7 +408,7 @@ window.submit = async () => {
     const refNum = 'SHL-'+Date.now().toString(36).toUpperCase().slice(-6);
 
     await addDoc(collection(db,'orders'),{
-      ref:refNum, client, address, workType, comment, date,
+      ref:refNum, client, address, workType, comment, date, paymentForm,
       externalLink:link, files:fileUrls, status:'new', senderIp,
       source:'yandex', createdAt:serverTimestamp(),
     });
@@ -367,7 +416,7 @@ window.submit = async () => {
     if (GAS_URL) {
       try {
         await fetch(GAS_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},
-          body:JSON.stringify({ref:refNum,client,address,workType,comment,date,externalLink:link,files:fileUrls,senderIp})});
+          body:JSON.stringify({ref:refNum,client,address,workType,comment,date,paymentForm,externalLink:link,files:fileUrls,senderIp})});
       } catch(e){}
     }
 

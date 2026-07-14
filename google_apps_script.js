@@ -27,7 +27,7 @@ function doPost(e) {
     const allLinks = [fileLinks, data.externalLink].filter(Boolean).join('\n');
     
     // Формат = существующая таблица Лист6:
-    // Пользователь | Дата | Фамилия/компания | Адрес/№ | Вид работ | Ссылка | Комментарий | Дата готовности
+    // A Пользователь | B Дата | C Фамилия/компания | D Адрес/№ | E Вид работ | F Ссылка | G Комментарий | H Дата готовности | I пусто | J Форма оплаты
     const row = [
       'shkafella_app',   // Пользователь (можно потом добавить имя)
       dateStr,           // Дата
@@ -37,6 +37,8 @@ function doPost(e) {
       allLinks || '-',   // Ссылки на файлы
       data.comment || '-',
       data.date || '-',
+      '',
+      data.paymentForm || '-',
     ];
     
     sheet.appendRow(row);
